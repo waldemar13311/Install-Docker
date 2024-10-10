@@ -1,4 +1,4 @@
-- name: Install dependent packages
+- name: "Install dependent packages"
   become: true
   ansible.builtin.yum:
     update_cache: true
@@ -6,7 +6,7 @@
       - yum-utils
     state: present
 
-- name: Set up the repository
+- name: "Set up the repository"
   become: true
   ansible.builtin.yum_repository:
     name: docker-ce
@@ -16,7 +16,7 @@
     gpgcheck: true
     gpgkey: https://download.docker.com/linux/centos/gpg
 
-- name: Install Docker
+- name: "Install Docker"
   become: true
   ansible.builtin.yum:
     update_cache: true
@@ -27,9 +27,3 @@
       - docker-buildx-plugin
       - docker-compose-plugin
     state: present
-
-- name: Restart docker service
-  become: true
-  ansible.builtin.service:
-    name: docker
-    state: restarted

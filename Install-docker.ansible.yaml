@@ -1,16 +1,22 @@
-- name: Install docker
+- name: "Install docker"
   hosts: all
   gather_facts: true
 
   tasks:
-    # Tested on 24.04.1 LTS (Noble Numbat)
+    # Tested on 24.04.1 LTS(Noble Numbat)
     # Everything is ok
-    - name: Install docker to Ubuntu
+    - name: "Install docker to Ubuntu"
       ansible.builtin.include_tasks: tasks/Install-docker-to-ubuntu.ansible.yaml
-      when: ansible_distribution == 'Ubuntu'
+      when: ansible_distribution == "Ubuntu"
 
     # Tested on CentOS Stream 9
     # Everything is ok
-    - name: Install docker to CentOS
+    - name: "Install docker to CentOS"
       ansible.builtin.include_tasks: tasks/Install-docker-to-centos.ansible.yaml
-      when: ansible_distribution == 'CentOS'
+      when: ansible_distribution == "CentOS"
+
+    - name: "Restart docker service"
+      become: true
+      ansible.builtin.service:
+        name: docker
+        state: restarted

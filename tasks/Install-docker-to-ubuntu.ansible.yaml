@@ -1,4 +1,4 @@
-- name: Install dependent packages
+- name: "Install dependent packages"
   become: true
   ansible.builtin.apt:
     update_cache: true
@@ -7,20 +7,21 @@
       - curl
     state: present
 
-- name: Make dir for docker.asc
+- name: "Make dir for docker.asc"
+  become: true
   ansible.builtin.file:
     path: /etc/apt/keyrings
     mode: '0755'
     state: directory
 
-- name: Download Docker's official GPG key
+- name: "Download Docker's official GPG key"
   become: true
   ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
     dest: /etc/apt/keyrings/docker.asc
     mode: '0644'
 
-- name: Determine the architecture
+- name: "Determine the architecture"
   ansible.builtin.set_fact:
     arch: >-
       {%- if ansible_architecture == 'aarch64' -%}
@@ -31,17 +32,17 @@
         {{ ansible_architecture }}
       {%- endif -%}
 
-- name: Debug architecture
+- name: "Debug architecture"
   ansible.builtin.debug:
     msg: "Using architecture: {{ arch }}"
 
-- name: Set up the repository
+- name: "Set up the repository"
   become: true
   ansible.builtin.apt_repository:
     repo: "deb [arch={{ arch }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
     state: present
 
-- name: Install Docker
+- name: "Install Docker"
   become: true
   ansible.builtin.apt:
     update_cache: true
@@ -51,9 +52,3 @@
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
-
-- name: Restart docker service
-  become: true
-  ansible.builtin.service:
-    name: docker
-    state: restarted
